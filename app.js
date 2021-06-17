@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -20,13 +21,22 @@ const OrderItem = require('./models/order-item');
 
 const app = express();
 
+const store = new SequelizeStore({
+    db: sequelize
+});
+
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session(
-    { secret: 'my secret', resave: false, saveUninitialized: false })
+    {
+        secret: 'my secret',
+        resave: false,
+        saveUninitialized: false,
+        store: store
+    })
 );
 
 //registers the middleware for the incoming request
