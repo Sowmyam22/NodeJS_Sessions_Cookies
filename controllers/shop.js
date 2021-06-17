@@ -1,5 +1,4 @@
 const Product = require('../models/product');
-const Cart = require('../models/cart');
 
 exports.getProducts = (req, res) => {
   //fetching the products using sequelize
@@ -9,7 +8,8 @@ exports.getProducts = (req, res) => {
       res.render('shop/product-list', {
         pageTitle: 'My Shop',
         path: '/products',
-        prods: products
+        prods: products,
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch(err => {
@@ -28,7 +28,8 @@ exports.getProduct = (req, res) => {
       res.render('shop/product-detail', {
         pageTitle: 'My Shop',
         path: '/products',
-        product: product
+        product: product,
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch(err => {
@@ -44,7 +45,8 @@ exports.getIndex = (req, res) => {
       res.render('shop/index', {
         pageTitle: 'My Shop',
         path: '/',
-        prods: products
+        prods: products,
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch(err => {
@@ -101,7 +103,8 @@ exports.getCart = (req, res) => {
           res.render('shop/cart', {
             pageTitle: 'My Shop',
             path: '/cart',
-            products: products
+            products: products,
+            isAuthenticated: req.isLoggedIn
           });
         })
         .catch(err => {
@@ -173,7 +176,8 @@ exports.getOrders = (req, res) => {
       res.render('shop/orders', {
         pageTitle: 'My Shop',
         path: '/orders',
-        orders: orders
+        orders: orders,
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch(err => console.log(err));
