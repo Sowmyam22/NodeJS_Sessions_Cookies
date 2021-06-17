@@ -2,6 +2,7 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const session = require('express-session');
 
 const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -24,6 +25,9 @@ app.set('views', 'views');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session(
+    { secret: 'my secret', resave: false, saveUninitialized: false })
+);
 
 //registers the middleware for the incoming request
 app.use((req, res, next) => {
