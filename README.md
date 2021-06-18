@@ -7,7 +7,7 @@ npm install --save express body-parser ejs mysql2 sequelize express-session
 
 ## Cookies
 
-1. Greate for storing data on the client (browser);
+1. Great for storing data on the client (browser);
 2. Do not store the sensitive data here (It can be viewed and manipulated).
 3. Cookies can be configured to expire when the browser is closed.
 4. Worked well together with the sessions.
