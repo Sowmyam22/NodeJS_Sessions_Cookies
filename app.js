@@ -10,7 +10,6 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const errorController = require('./controllers/error');
 
-// const db = require('./util/database');
 const sequelize = require('./util/database');
 const Product = require('./models/product');
 const User = require('./models/user');
@@ -22,7 +21,7 @@ const OrderItem = require('./models/order-item');
 const app = express();
 
 const store = new SequelizeStore({
-    db: sequelize
+  db: sequelize
 });
 
 app.set('view engine', 'ejs');
@@ -31,25 +30,26 @@ app.set('views', 'views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session(
-    {
-        secret: 'my secret',
-        resave: false,
-        saveUninitialized: false,
-        store: store
-    })
+  {
+    secret: 'my secret',
+    resave: false,
+    saveUninitialized: false,
+    store: store
+  })
 );
 
-//registers the middleware for the incoming request
 app.use((req, res, next) => {
-    User.findByPk(1)
-        .then(user => {
-            req.user = user;
-            next();
-        })
-        .catch(err => {
-            console.log(err);
-        });
-});
+  if (!req.session.user) {
+    return next();
+  }
+
+  User.findByPk(req.session.user.id)
+  .then(user => {
+    req.user = user;
+    next()
+  })
+  .catch(err => console.log(err));
+})
 
 app.use('/admin', adminData.routes);
 app.use(shopRoutes);
@@ -69,23 +69,23 @@ Order.belongsToMany(Product, { through: OrderItem });
 
 // sequelize.sync({ force: true })    // used to override the tables in the database
 sequelize.sync()
-    .then(result => {
-        return User.findByPk(1);
-    })
-    .then(user => {
-        if (!user) {
-            return User.create({ name: 'Sowmya', email: 'sowmya@gmail.com' });
-        }
+  .then(result => {
+    return User.findByPk(1);
+  })
+  .then(user => {
+    if (!user) {
+      return User.create({ name: 'Sowmya', email: 'sowmya@gmail.com' });
+    }
 
-        return user;
-    })
-    .then(user => {
-        return user.createCart();
-    })
-    .then(cart => {
-        app.listen(3000);
-    })
-    .catch(err => {
-        console.log(err);
-    });
+    return user;
+  })
+  .then(user => {
+    return user.createCart();
+  })
+  .then(cart => {
+    app.listen(3000);
+  })
+  .catch(err => {
+    console.log(err);
+  });
 
